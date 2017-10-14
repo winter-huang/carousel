@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>旋转木马</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap" id="wrap">
+    <div class="slide" id="slide">
+        <ul>
+            <li>
+                <a href="#"><img src="images/slidepic1.jpg" alt="" /></a>
+            </li>
+            <li>
+                <a href="#"><img src="images/slidepic2.jpg" alt="" /></a>
+            </li>
+            <li>
+                <a href="#"><img src="images/slidepic3.jpg" alt="" /></a>
+            </li>
+            <li>
+                <a href="#"><img src="images/slidepic4.jpg" alt="" /></a>
+            </li>
+            <li>
+                <a href="#"><img src="images/slidepic5.jpg" alt="" /></a>
+            </li>
+        </ul>
+        <div class="arrow" id="arrow">
+            <a href="javascript:;" class="prev" id="arrLeft"></a>
+            <a href="javascript:;" class="next" id="arrRight"></a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
+<script src='common.js'></script>
+<script>
+    function animatev5(element,obj) {
+        clearInterval(element.timer);
+        element.timer=setInterval(function () {
+            var flag=true;
+            for(var attr in obj){
+                if(attr=='opacity'){
+                    var target=obj[attr];
+                    var current=parseFloat(getStyle(element,attr));
+                    target=Math.floor(target*100);
+                    current=Math.floor(current*100);
+                    var step=(target-current)/10;
+                    step=target>=current?Math.ceil(step):Math.floor(step);
+                    current+=step;
+                    element.style[attr]=current/100;
+                } else if(attr=='zIndex'){
+                    var target=obj[attr];
+                    var current=target;
+                    element.style[attr]=target;
+                }else{
+                    var target = obj[attr];
+                    var current = parseInt(getStyle(element,attr));
+                    var step = (target-current)/10;
+                    step=target>=current?Math.ceil(step):Math.floor(step);
+                    current+=step;
+                    element.style[attr]=current+'px';
+                }
+                if(current!=target){
+                    flag=false;
+                }
+            }
+            if(flag){
+                clearInterval(element.timer);
+            }
+
+        },30)
+    }
+
+
+    var config = [{
+        width: 400,
+        top: 20,
+        left: 50,
+        opacity: 0.2,
+        zIndex: 2
+    }, //0
+        {
+            width: 600,
+            top: 70,
+            left: 0,
+            opacity: 0.8,
+            zIndex: 3
+        }, //1
+        {
+            width: 800,
+            top: 100,
+            left: 200,
+            opacity: 1,
+            zIndex: 4
+        }, //2
+        {
+            width: 600,
+            top: 70,
+            left: 600,
+            opacity: 0.8,
+            zIndex: 3
+        }, //3
+        {
+            width: 400,
+            top: 20,
+            left: 750,
+            opacity: 0.2,
+            zIndex: 2
+        } //4
+    ];
+
+
+    var wrap = document.getElementById("wrap");
+    var arrow = document.getElementById("arrow");
+    var btnLeft = arrow.children[0];
+    var btnRight = arrow.children[1];
+    //根据数组里面的每个对象，控制每一张图片的动画 -- 散开
+    var lis = document.getElementById("wrap").getElementsByTagName("li");
+    rotate();
+
+    function rotate(){
+        for(var i = 0; i < lis.length ; i++){
+            animatev5(lis[i],config[i]);
+        }
+    }
+
+    //三角箭头的显示和隐藏
+    wrap.onmouseover = function(){
+        animatev5(arrow,{opacity:1});
+    }
+    wrap.onmouseout = function(){
+        animatev5(arrow,{opacity:0});
+    }
+    //箭头的点击事件
+    btnRight.onclick = function(){
+        var first = config.shift();
+        config.push(first);
+        rotate();
+    }
+    btnLeft.onclick = function(){
+        var last = config.pop();
+        config.unshift(last);
+        rotate();
+    }
+</script>
